@@ -59,11 +59,15 @@ class AFD:
         return False
 
     def analise_pares_nao_marcados(self):
+        flag = 0
         for tab in self.tabela:
             if not tab.marcado:
                 if not (self.verifica(tab.est_1, tab.est_2, self.alfabeto[0])) or not (self.verifica(tab.est_1, tab.est_2, self.alfabeto[1])):
                     tab.marcado = True
-
+                    flag = 1
+        if flag == 1:
+            self.analise_pares_nao_marcados()
+                    
     def unificacao_pares_nao_marcados(self):
         pass
 
