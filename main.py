@@ -13,6 +13,10 @@ for line in afd_inicial:
 afd = AFD(estado_inicial, estados_finais, automato, num)
 afd.minimizar()
 print("Nao marcados:\n")
+for node in afd.nodes:
+    print(node.estado + node.next_estado + node.valor)
+
 for tab in afd.tabela:
     if not tab.marcado:
         print(tab.est_1 + '-' + tab.est_2 + ' : ' + "Nao foi marcado")
+        

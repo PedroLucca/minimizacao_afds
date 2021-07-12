@@ -12,6 +12,7 @@ class AFD:
         self.nodes = []
         self.estados = []
         self.tabela = []
+        self.excluidos = []
     
     def inicializar(self):
         for node in self.automato:
@@ -69,10 +70,48 @@ class AFD:
             self.analise_pares_nao_marcados()
                     
     def unificacao_pares_nao_marcados(self):
-        pass
+        
+        for tab in self.tabela:
+            if not tab.marcado:
+                aux = len(self.estados)
+                i=0
+                print(tab)
+                while i <= aux:
+                #for i in range(0, len(self.estados)-1):    
+                    print(self.estados[i])
+                    if self.estados[i] == tab.est_1:
+                        print(self.estados[i])
+                        self.excluidos.append(self.estados[i])
+                        del(self.estados[i])
+                            
+                        aux = len(self.estados)
+                    if self.estados[i] == tab.est_2:
+                        aux = self.estados[i]
+                        print(self.estados[i])
+                        self.excluidos.append(self.estados[i])
+                        del(self.estados[i])
+                        aux = len(self.estados)
+                        self.estados.append("s" + tab.est_1[-1] + tab.est_2[-1])
+                        for node in self.nodes:
+                            if node.estado ==  tab.est_1 or node.estado ==  tab.est_2:
+                                node.estado = self.estados[-1]
+                            if node.next_estado ==  tab.est_1 or node.next_estado ==  tab.est_2:
+                                node.next_estado = self.estados[-1]
+                    i += 1
+                
+        print(self.estados)        
 
-    def exclusao_pares_inuteis(self):
-        pass
+    def escrevendo(self):
+        arquivo = open('output.txt', 'w')
+        texto = []
+        texto.append("Automato\n")
+        for node in self.nodes:
+            texto.append(node.estado + "," + node.next_estado + "," + node.valor + "\n")
+        for a in texto:
+            arquivo.write(a)
+        arquivo.close()
+        
+            
 
 
     def minimizar(self):
@@ -86,7 +125,7 @@ class AFD:
         #passo 4
         self.unificacao_pares_nao_marcados()
         #passo 5
-        self.exclusao_pares_inuteis()
+        self.escrevendo()
         
 
         #Exibir resultado final!
