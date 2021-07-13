@@ -75,23 +75,23 @@ class AFD:
             if not tab.marcado:
                 aux = len(self.estados)
                 i=0
-                print(tab)
+                #print(tab)
                 while i <= aux:
                 #for i in range(0, len(self.estados)-1):    
-                    print(self.estados[i])
+                    #print(self.estados[i])
                     if self.estados[i] == tab.est_1:
-                        print(self.estados[i])
+                        #print(self.estados[i])
                         self.excluidos.append(self.estados[i])
                         del(self.estados[i])
                             
                         aux = len(self.estados)
                     if self.estados[i] == tab.est_2:
                         aux = self.estados[i]
-                        print(self.estados[i])
+                        #print(self.estados[i])
                         self.excluidos.append(self.estados[i])
                         del(self.estados[i])
                         aux = len(self.estados)
-                        self.estados.append("s" + tab.est_1[-1] + tab.est_2[-1])
+                        self.estados.append(tab.est_1[0] + tab.est_1[-1] + tab.est_2[-1])
                         for node in self.nodes:
                             if node.estado ==  tab.est_1 or node.estado ==  tab.est_2:
                                 node.estado = self.estados[-1]
@@ -99,12 +99,23 @@ class AFD:
                                 node.next_estado = self.estados[-1]
                     i += 1
                 
-        print(self.estados)        
+        #print(self.estados)
+
+    def exclusao_elementos_inuteis(self):
+        for i in range(0, len(self.nodes)):
+            for k in range(i+1, len(self.nodes)):
+                if k >= len(self.nodes):
+                    pass
+                else:
+                    if self.nodes[i].estado == self.nodes[k].estado and self.nodes[i].next_estado == self.nodes[k].next_estado and self.nodes[i].valor == self.nodes[k].valor:
+                        del self.nodes[k]
+            
+
+        
 
     def escrevendo(self):
-        arquivo = open('output.txt', 'w')
+        arquivo = open('minimizado.txt', 'w')
         texto = []
-        texto.append("Automato\n")
         for node in self.nodes:
             texto.append(node.estado + "," + node.next_estado + "," + node.valor + "\n")
         for a in texto:
@@ -125,8 +136,8 @@ class AFD:
         #passo 4
         self.unificacao_pares_nao_marcados()
         #passo 5
+        self.exclusao_elementos_inuteis()
+        #passo extra!
         self.escrevendo()
-        
-
         #Exibir resultado final!
         
