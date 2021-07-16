@@ -35,10 +35,13 @@ class AFD:
             passou.append(self.estados[i])
 
     def marcacao_dos_pares(self):
+        #print("Marcado no Passo-2")
         for tab in self.tabela:
             if tab.est_1 in self.estados_finais and tab.est_2 not in self.estados_finais:
+                #print("Foi marcado " + tab.est_1 + "-" + tab.est_2)
                 tab.marcado = True
             elif tab.est_2 in self.estados_finais and tab.est_1 not in self.estados_finais:
+                #print("Foi marcado " + tab.est_1 + "-" + tab.est_2)
                 tab.marcado = True
     
     #Verifica se o elemento não-marcado da tabela deve ser marcado(retorna False se deve ser marcado)
@@ -50,45 +53,45 @@ class AFD:
             elif node.estado == est_2 and node.valor == valor:
                 resultados.append(node.next_estado)
 
-        if len(resultados) == 1:
+        if len(resultados) == 1 or resultados[0] == resultados[1]:
             return True
         else:
             for tab in self.tabela:
-                if (tab.est_1 == resultados[0] or tab.est_2 == resultados[0]) and (tab.est_1 == resultados[1] or tab.est_2 == resultados[1]):
+                if (tab.est_1 == resultados[0] and tab.est_2 == resultados[1]) or (tab.est_1 == resultados[1] and tab.est_2 == resultados[0]):
                     if tab.marcado == False:
                         return True
         return False
 
     def analise_pares_nao_marcados(self):
-        flag = 0
+        #print("Marcado no Passo-3")
         for tab in self.tabela:
+            flag = 0
             if not tab.marcado:
                 for letra in self.alfabeto:
                     if not (self.verifica(tab.est_1, tab.est_2, letra)):
+                        #print("Foi marcado " + tab.est_1 + "-" + tab.est_2)
                         tab.marcado = True
                         flag = 1
-        if flag == 1:
-            self.analise_pares_nao_marcados()
+            if flag == 1:
+                self.analise_pares_nao_marcados()
                     
     def unificacao_pares_nao_marcados(self):
         for tab in self.tabela:
             if not tab.marcado:
                 aux = len(self.estados)
                 i=0
-                #print(tab)
+
                 while i < aux:
                     final_flag = 0
-                #for i in range(0, len(self.estados)-1):    
-                    #print(self.estados[i])
                     if self.estados[i] == tab.est_1:
-                        #print(self.estados[i])
+
                         self.excluidos.append(self.estados[i])
                         del(self.estados[i])
                             
                         aux = len(self.estados)
                     if self.estados[i] == tab.est_2:
                         aux = self.estados[i]
-                        #print(self.estados[i])
+
                         self.excluidos.append(self.estados[i])
                         del(self.estados[i])
                         aux = len(self.estados)
@@ -111,7 +114,7 @@ class AFD:
                                 node.next_estado = self.estados[-1]
                     i += 1
                 
-        #print(self.estados)
+
 
     def exclusao_elementos_inuteis(self):
         for i in range(0, len(self.nodes)):
