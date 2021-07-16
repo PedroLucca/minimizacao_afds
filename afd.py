@@ -63,20 +63,21 @@ class AFD:
         flag = 0
         for tab in self.tabela:
             if not tab.marcado:
-                if not (self.verifica(tab.est_1, tab.est_2, self.alfabeto[0])) or not (self.verifica(tab.est_1, tab.est_2, self.alfabeto[1])):
-                    tab.marcado = True
-                    flag = 1
+                for letra in self.alfabeto:
+                    if not (self.verifica(tab.est_1, tab.est_2, letra)):
+                        tab.marcado = True
+                        flag = 1
         if flag == 1:
             self.analise_pares_nao_marcados()
                     
     def unificacao_pares_nao_marcados(self):
-        
         for tab in self.tabela:
             if not tab.marcado:
                 aux = len(self.estados)
                 i=0
                 #print(tab)
-                while i <= aux:
+                while i < aux:
+                    final_flag = 0
                 #for i in range(0, len(self.estados)-1):    
                     #print(self.estados[i])
                     if self.estados[i] == tab.est_1:
@@ -92,6 +93,17 @@ class AFD:
                         del(self.estados[i])
                         aux = len(self.estados)
                         self.estados.append(tab.est_1[0] + tab.est_1[-1] + tab.est_2[-1])
+                        if tab.est_1 == self.estado_inicial or tab.est_2 == self.estado_inicial:
+                                self.estado_inicial = self.estados[-1]
+                        for u in range(0, len(self.estados_finais)-1):
+                            if tab.est_1 == self.estados_finais[u] or tab.est_2 == self.estados_finais[u]:
+                                del(self.estados_finais[u])
+                                final_flag = 1
+                            if self.estados_finais[u] in self.excluidos:
+                                del(self.estados_finais[u])
+                        if final_flag == 1:
+                            self.estados_finais.append(self.estados[-1])
+                        
                         for node in self.nodes:
                             if node.estado ==  tab.est_1 or node.estado ==  tab.est_2:
                                 node.estado = self.estados[-1]
